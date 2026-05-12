@@ -724,7 +724,7 @@ window.doLogout = async function(){
 }
 
 // ── SESSION ───────────────────────────────────────────────
-sb.auth.onAuthStateChange(async (event,session)=>{
+async function iniciarSessao(session){
   if(session){
     currentUser=session.user
     await loadProfile()
@@ -736,7 +736,16 @@ sb.auth.onAuthStateChange(async (event,session)=>{
     document.getElementById('loginWrap').style.display='flex'
     document.getElementById('appWrap').style.display='none'
   }
+}
+
+sb.auth.onAuthStateChange(async (event,session)=>{
+  await iniciarSessao(session)
 })
+
+// getSession garante que sessoes existentes sao capturadas
+// mesmo quando onAuthStateChange dispara antes do listener estar pronto
+const { data:{ session: sessaoAtual } } = await sb.auth.getSession()
+if(sessaoAtual) await iniciarSessao(sessaoAtual)
 
 async function loadProfile(){
   const {data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single()
