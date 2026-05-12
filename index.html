@@ -303,8 +303,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div style="font-size:12px;color:var(--text2);margin-bottom:20px">Acesso restrito. Entre com seu e-mail e senha.</div>
     <div id="loginForm">
       <div class="login-field"><label for="lEmail">E-mail</label><input type="email" id="lEmail" placeholder="seu@email.com"></div>
-      <div class="login-field"><label for="lSenha">Senha</label><input type="password" id="lSenha" placeholder="••••••••"></div>
-      <button class="btn-login" id="btnLogin">Entrar</button>
+      <div class="login-field"><label for="lSenha">Senha</label><input type="password" id="lSenha" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-login" onclick="doLogin()">Entrar</button>
     </div>
     <div class="login-err" id="loginErr"></div>
   </div>
@@ -440,7 +440,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <input type="hidden" id="editId">
       <div id="tplSelector">
         <div class="field">
-          <label for="fTemplate">Usar template</label>
+          <label>Usar template</label>
           <select id="fTemplate" onchange="applyTemplate()">
             <option value="">— Nenhum —</option>
           </select>
@@ -448,11 +448,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </div>
       <div class="row2">
         <div class="field">
-          <label for="fCliente">Cliente *</label>
+          <label>Cliente *</label>
           <input type="text" id="fCliente" placeholder="Nome do cliente">
         </div>
         <div class="field">
-          <label for="fServico">Serviço *</label>
+          <label>Serviço *</label>
           <select id="fServico">
             <option value="trafego">Tráfego Pago</option>
             <option value="social">Social Media</option>
@@ -465,12 +465,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         </div>
       </div>
       <div class="field">
-        <label for="fTitulo">Tarefa *</label>
+        <label>Tarefa *</label>
         <input type="text" id="fTitulo" placeholder="Ex: Montar Campanha">
       </div>
       <div class="row2">
         <div class="field">
-          <label for="fEsteira">Esteira *</label>
+          <label>Esteira *</label>
           <select id="fEsteira" onchange="toggleBloqField()">
             <option value="programada">📅 Programada</option>
             <option value="bloqueada">🔒 Bloqueada</option>
@@ -478,7 +478,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           </select>
         </div>
         <div class="field">
-          <label for="fResponsavel">Responsável</label>
+          <label>Responsável</label>
           <select id="fResponsavel">
             <option value="">— Eu mesmo —</option>
           </select>
@@ -486,28 +486,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </div>
       <div class="row2">
         <div class="field">
-          <label for="fInicio">Data início</label>
+          <label>Data início</label>
           <input type="datetime-local" id="fInicio">
         </div>
         <div class="field">
-          <label for="fTempo">Tempo estimado (min)</label>
+          <label>Tempo estimado (min)</label>
           <input type="number" id="fTempo" value="60" min="5" step="5">
         </div>
       </div>
       <div class="field">
-        <label for="fPrazo">Prazo final</label>
+        <label>Prazo final</label>
         <input type="datetime-local" id="fPrazo">
       </div>
       <div class="field bloq-field" id="bloqField">
-        <label for="fBloq">Motivo do bloqueio</label>
+        <label>Motivo do bloqueio</label>
         <input type="text" id="fBloq" placeholder="Ex: Aguardando aprovação">
       </div>
       <div class="field">
-        <label for="fObs">Observações</label>
+        <label>Observações</label>
         <textarea id="fObs" placeholder="Detalhes, links, instruções..."></textarea>
       </div>
       <div class="field" id="checklistEditor" style="display:none">
-        <label for="etapasEditor">Etapas (checklist)</label>
+        <label>Etapas (checklist)</label>
         <div class="etapas-editor" id="etapasEditor"></div>
         <button class="btn-add-etapa" onclick="addEtapaField()">+ Adicionar etapa</button>
       </div>
@@ -529,8 +529,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="modal-body">
       <input type="hidden" id="tplEditId">
       <div class="row2">
-        <div class="field"><label for="tNome">Nome *</label><input type="text" id="tNome" placeholder="Ex: Montar Campanha"></div>
-        <div class="field"><label for="tServico">Serviço *</label>
+        <div class="field"><label>Nome *</label><input type="text" id="tNome" placeholder="Ex: Montar Campanha"></div>
+        <div class="field"><label>Serviço *</label>
           <select id="tServico">
             <option value="trafego">Tráfego Pago</option>
             <option value="social">Social Media</option>
@@ -542,9 +542,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           </select>
         </div>
       </div>
-      <div class="field"><label for="tTempo">Tempo estimado (minutos)</label><input type="number" id="tTempo" value="60" min="5" step="5"></div>
+      <div class="field"><label>Tempo estimado (minutos)</label><input type="number" id="tTempo" value="60" min="5" step="5"></div>
       <div class="field">
-        <label for="tplEtapasEditor">Etapas</label>
+        <label>Etapas</label>
         <div class="etapas-editor" id="tplEtapasEditor"></div>
         <button class="btn-add-etapa" onclick="addTplEtapa()">+ Adicionar etapa</button>
       </div>
@@ -564,8 +564,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <button class="modal-close" onclick="closeInviteModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="field"><label for="inviteEmail">E-mail</label><input type="email" id="inviteEmail" placeholder="email@exemplo.com"></div>
-      <div class="field"><label for="inviteNome">Nome</label><input type="text" id="inviteNome" placeholder="Nome da pessoa"></div>
+      <div class="field"><label>E-mail</label><input type="email" id="inviteEmail" placeholder="email@exemplo.com"></div>
+      <div class="field"><label>Nome</label><input type="text" id="inviteNome" placeholder="Nome da pessoa"></div>
       <div style="font-size:12px;color:var(--text2);background:var(--bg3);border-radius:8px;padding:10px;line-height:1.5">
         A pessoa receberá um e-mail para definir a senha e acessar o kanban. Após o cadastro receberá notificação no WhatsApp quando tarefas forem atribuídas.
       </div>
@@ -585,8 +585,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <button class="modal-close" onclick="closePerfilModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="field"><label for="pNome">Nome</label><input type="text" id="pNome"></div>
-      <div class="field"><label for="pTelefone">Telefone (WhatsApp com DDI)</label><input type="text" id="pTelefone" placeholder="5511999999999"></div>
+      <div class="field"><label>Nome</label><input type="text" id="pNome"></div>
+      <div class="field"><label>Telefone (WhatsApp com DDI)</label><input type="text" id="pTelefone" placeholder="5511999999999"></div>
       <div style="font-size:11px;color:var(--text2)">Formato: 55 + DDD + número. Ex: 5544999998888</div>
     </div>
     <div class="modal-footer">
@@ -605,8 +605,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     </div>
     <div class="modal-body">
       <div style="font-size:13px;color:var(--text2);margin-bottom:6px" id="rescheduleTaskName"></div>
-      <div class="field"><label for="rescheduleDays">Escolha o novo dia</label><div class="reschedule-days" id="rescheduleDays"></div></div>
-      <div class="field" style="margin-top:8px"><label for="rescheduleTime">Horário de início</label><input type="time" id="rescheduleTime" value="09:00"></div>
+      <div class="field"><label>Escolha o novo dia</label><div class="reschedule-days" id="rescheduleDays"></div></div>
+      <div class="field" style="margin-top:8px"><label>Horário de início</label><input type="time" id="rescheduleTime" value="09:00"></div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeReschedule()">Cancelar</button>
@@ -632,15 +632,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
 // ── CONFIG ────────────────────────────────────────────────
 const URL_SB = 'https://iruyblqjkcokonfuiwsu.supabase.co'
 const KEY_SB = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlydXlibHFqa2Nva29uZnVpd3N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5Njg2NTAsImV4cCI6MjA5MjU0NDY1MH0.SHxQn5Iukk41JsaObkrkNxv5LLFsk_zAc4mCD_IS-zQ'
 
 // ⚠ Substitua ZAPI_TOKEN pelo novo token após regenerar no painel ZAPI
-// Para desativar temporariamente sem apagar o token: mude ZAPI_ACTIVE = false
 const ZAPI_ACTIVE = true
 const ZAPI_ID    = '3F2C4E3E3A2300AD2DF5EAAA29470FA9'
 const ZAPI_TOKEN = '9875C28ABE4BDF0EEBC993DA' // TODO: trocar antes do deploy final
@@ -661,7 +660,7 @@ const SERVICOS = {
 const DIAS  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-const sb = supabase.createClient(URL_SB, KEY_SB)
+const sb = createClient(URL_SB, KEY_SB)
 let tasks=[], templates=[], members=[]
 let currentUser=null, currentProfile=null
 let dragId=null, openMenuId=null, reminderTimer=null
@@ -706,41 +705,9 @@ window.doLogin = async function(){
   const email=document.getElementById('lEmail').value.trim()
   const senha=document.getElementById('lSenha').value
   if(!email||!senha){ document.getElementById('loginErr').textContent='Preencha todos os campos'; return }
-  const btnL=document.getElementById('btnLogin')
-  btnL.disabled=true; btnL.textContent='Entrando...'
-  const {data, error}=await sb.auth.signInWithPassword({email,password:senha})
-  if(error){
-    document.getElementById('loginErr').textContent=error.message
-    btnL.disabled=false; btnL.textContent='Entrar'
-    return
-  }
-  // Fallback: onAuthStateChange pode nao disparar em alguns ambientes (ex: Netlify)
-  // Forca a entrada manualmente se tiver sessao valida
-  if(data?.session){
-    currentUser = data.session.user
-    document.getElementById('loginErr').textContent = '1: sessao ok, carregando perfil...'
-    try {
-      await loadProfile()
-      document.getElementById('loginErr').textContent = '2: perfil ok, abrindo app...'
-      document.getElementById('loginWrap').style.display='none'
-      document.getElementById('appWrap').style.display='block'
-      document.getElementById('loginErr').textContent = '3: app visivel, carregando tarefas...'
-      await loadAll()
-      document.getElementById('loginErr').textContent = '4: tudo ok!'
-    } catch(e) {
-      document.getElementById('loginErr').textContent = 'ERRO: ' + e.message
-      btnL.disabled=false; btnL.textContent='Entrar'
-    }
-  } else {
-    document.getElementById('loginErr').textContent = 'ERRO: sem sessao na resposta'
-    btnL.disabled=false; btnL.textContent='Entrar'
-  }
+  const {error}=await sb.auth.signInWithPassword({email,password:senha})
+  if(error){ document.getElementById('loginErr').textContent=error.message; return }
 }
-
-// Listeners do login — via addEventListener (mais confiável que inline onclick em módulos)
-document.getElementById('btnLogin').addEventListener('click', ()=>window.doLogin())
-document.getElementById('lEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') window.doLogin() })
-document.getElementById('lSenha').addEventListener('keydown', e=>{ if(e.key==='Enter') window.doLogin() })
 window.doSignup = async function(){
   const nome  = document.getElementById('sNome').value.trim()
   const email = document.getElementById('sEmail').value.trim()
@@ -851,8 +818,8 @@ function renderCarga(){
   const today=todayStr()
   const todayTasks=tasks.filter(t=>t.data_inicio&&dateStr(new Date(t.data_inicio))===today)
   const totalMin=todayTasks.reduce((s,t)=>s+(t.tempo_estimado_min||60),0)
-  const rawPct = Math.round(totalMin/CAP_MIN*100)
-  const pct = Math.min(100, rawPct)
+  const rawPct=Math.round(totalMin/CAP_MIN*100)
+  const pct=Math.min(100,rawPct)
   const fill=document.getElementById('cargaFill')
   fill.style.width=pct+'%'
   fill.className='carga-fill '+(rawPct>100?'over':rawPct>75?'warn':'ok')
@@ -1450,16 +1417,11 @@ window.showView=function(id,btn){
 }
 
 // ── REALTIME ─────────────────────────────────────────────
-// Debounce 1500ms evita loop: múltiplos eventos em sequência disparam
-// apenas 1 reload depois que o "barulho" acalmar.
-// Canais tpl e profiles são excluídos do realtime — raramente mudam
-// em tempo real e contribuíam para o loop de travamento.
 let reloadTimer = null
 function debouncedLoad(){
   clearTimeout(reloadTimer)
   reloadTimer = setTimeout(loadAll, 1500)
 }
-
 sb.channel('kanban')
   .on('postgres_changes',{event:'*',schema:'public',table:'kanban_tasks'},debouncedLoad)
   .subscribe()
