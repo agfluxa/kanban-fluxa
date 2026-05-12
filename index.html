@@ -1534,13 +1534,10 @@ window.massaPreview = function(){
   })
 
   const aviso = total > datas.length
-    ? `
-⚠ ${total} tarefas em ${datas.length} datas — algumas datas vão ter mais de 1 tarefa.`
-    : `
-✅ ${total} tarefas em ${datas.length} datas disponíveis.`
+    ? '\n⚠ ' + total + ' tarefas em ' + datas.length + ' datas — algumas datas vão ter mais de 1 tarefa.'
+    : '\n✅ ' + total + ' tarefas em ' + datas.length + ' datas disponíveis.'
 
-  box.textContent = linhas.join('
-') + aviso
+  box.textContent = linhas.join('\n') + aviso
 }
 
 window.saveMassa = async function(){
