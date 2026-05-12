@@ -564,8 +564,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <button class="modal-close" onclick="closeInviteModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="field"><label>E-mail</label><input type="email" id="inviteEmail" placeholder="email@exemplo.com"></div>
-      <div class="field"><label>Nome</label><input type="text" id="inviteNome" placeholder="Nome da pessoa"></div>
+      <div class="field"><label for="inviteEmail">E-mail</label><input type="email" id="inviteEmail" placeholder="email@exemplo.com"></div>
+      <div class="field"><label for="inviteNome">Nome</label><input type="text" id="inviteNome" placeholder="Nome da pessoa"></div>
       <div style="font-size:12px;color:var(--text2);background:var(--bg3);border-radius:8px;padding:10px;line-height:1.5">
         A pessoa receberá um e-mail para definir a senha e acessar o kanban. Após o cadastro receberá notificação no WhatsApp quando tarefas forem atribuídas.
       </div>
@@ -744,8 +744,16 @@ sb.auth.onAuthStateChange(async (event,session)=>{
 
 // getSession garante que sessoes existentes sao capturadas
 // mesmo quando onAuthStateChange dispara antes do listener estar pronto
-const { data:{ session: sessaoAtual } } = await sb.auth.getSession()
-if(sessaoAtual) await iniciarSessao(sessaoAtual)
+try {
+  const { data:{ session: sessaoAtual }, error } = await sb.auth.getSession()
+  if(error) throw error
+  if(sessaoAtual) await iniciarSessao(sessaoAtual)
+} catch(e) {
+  // Sessao invalida ou expirada — limpa e mostra login normalmente
+  await sb.auth.signOut()
+  document.getElementById('loginWrap').style.display='flex'
+  document.getElementById('appWrap').style.display='none'
+}
 
 async function loadProfile(){
   const {data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single()
@@ -1108,18 +1116,30 @@ window.openInviteModal=function(){ document.getElementById('inviteOverlay').clas
 window.closeInviteModal=function(){ document.getElementById('inviteOverlay').classList.remove('open') }
 window.sendInvite=async function(){
   const email=document.getElementById('inviteEmail').value.trim()
+  const nome=document.getElementById('inviteNome').value.trim()||email.split('@')[0]
   if(!email){ showToast('Preencha o e-mail','error'); return }
-  const {error}=await sb.auth.admin?.inviteUserByEmail(email).catch(()=>({})) ||
-    await sb.functions?.invoke('invite-user',{body:{email}}).catch(()=>({})) || {}
 
-  // fallback: cria usuário direto
-  const {error:e2}=await sb.auth.signUp({
-    email,
-    password:Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2),
-    options:{data:{nome:document.getElementById('inviteNome').value.trim()||email.split('@')[0]}}
+  // Cria o usuário via signUp
+  const senha=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)+'A1!'
+  const {data:signUpData, error:e1}=await sb.auth.signUp({
+    email, password:senha,
+    options:{data:{nome}}
   })
-  if(e2&&!e2.message?.includes('already')){ showToast('Erro: '+e2.message,'error'); return }
-  showToast('Membro adicionado! Peça para ele redefinir a senha pelo app.')
+  if(e1&&!e1.message?.includes('already')){
+    showToast('Erro ao criar usuário: '+e1.message,'error'); return
+  }
+
+  // Insere perfil manualmente (RLS permite insert para autenticados)
+  if(signUpData?.user){
+    await sb.from('profiles').upsert({
+      id: signUpData.user.id,
+      email,
+      nome,
+      papel: 'membro'
+    },{onConflict:'id'})
+  }
+
+  showToast('✅ Membro convidado! Peça para ele definir a senha via "Esqueci minha senha".')
   closeInviteModal(); await loadAll()
 }
 
