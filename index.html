@@ -632,8 +632,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <div class="toast" id="toast"></div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
 
 // ── CONFIG ────────────────────────────────────────────────
 const URL_SB = 'https://iruyblqjkcokonfuiwsu.supabase.co'
@@ -661,7 +661,7 @@ const SERVICOS = {
 const DIAS  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
-const sb = createClient(URL_SB, KEY_SB)
+const sb = supabase.createClient(URL_SB, KEY_SB)
 let tasks=[], templates=[], members=[]
 let currentUser=null, currentProfile=null
 let dragId=null, openMenuId=null, reminderTimer=null
