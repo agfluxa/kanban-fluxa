@@ -238,6 +238,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .btn-cancel{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 15px;border-radius:8px;font-family:var(--font);font-size:13px;cursor:pointer}
 .btn-save{background:var(--prog);border:none;color:#fff;padding:7px 17px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer}
 .btn-save:hover{opacity:.9}
+.btn-secondary{background:var(--bg4);border:1px solid var(--border);color:var(--text1);padding:7px 14px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer}
+.btn-secondary:hover{background:var(--bg3)}
+.dias-semana{display:flex;gap:6px;flex-wrap:wrap}
+.dia-chip{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:12px;font-family:var(--font);transition:.15s}
+.dia-chip.sel{background:var(--prog);color:#fff;border-color:var(--prog)}
+.tipo-row{display:flex;gap:8px}
+.tipo-btn{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--font);transition:.15s;text-align:center}
+.tipo-btn.sel{border-color:var(--prog);color:var(--prog);background:rgba(99,102,241,.1)}
+.massa-preview{background:var(--bg3);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);margin-top:4px;max-height:140px;overflow-y:auto;line-height:1.8}
 .etapas-editor{display:flex;flex-direction:column;gap:6px}
 .etapa-row{display:flex;gap:6px;align-items:center}
 .etapa-row input{flex:1}
@@ -324,6 +333,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       <div class="status-dot" id="statusDot"></div>
       <span class="status-lbl" id="statusLbl">Conectando...</span>
       <button class="bell-btn" onclick="openReminder()">🔔</button>
+      <button class="btn-secondary" id="btnMassa" style="display:none" onclick="openMassaModal()">⚡ Entrada em massa</button>
       <button class="btn-primary" onclick="openModal()">＋ Nova tarefa</button>
       <div class="user-chip" onclick="toggleUserMenu()">
         <div class="user-avatar" id="navAvatar">?</div>
@@ -596,6 +606,92 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   </div>
 </div>
 
+<!-- MODAL ENTRADA EM MASSA -->
+<div class="modal-overlay" id="massaOverlay">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">⚡ Entrada em Massa</div>
+      <button class="modal-close" onclick="closeMassaModal()">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field">
+          <label for="mCliente">Cliente *</label>
+          <input type="text" id="mCliente" placeholder="Nome do cliente" oninput="massaPreview()">
+        </div>
+        <div class="field">
+          <label for="mServico">Serviço *</label>
+          <select id="mServico" onchange="massaPreview()">
+            <option value="social">Social Media</option>
+            <option value="trafego">Tráfego Pago</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Tipo de conteúdo *</label>
+        <div class="tipo-row">
+          <button class="tipo-btn sel" id="tipoVideo" onclick="toggleTipo('video')">🎬 Vídeo<br><small style="font-size:10px;opacity:.7">Nasce Bloqueado</small></button>
+          <button class="tipo-btn" id="tipoEstatico" onclick="toggleTipo('estatico')">🖼 Estático<br><small style="font-size:10px;opacity:.7">Nasce Programado</small></button>
+          <button class="tipo-btn" id="tipoMisto" onclick="toggleTipo('misto')">🎬🖼 Misto<br><small style="font-size:10px;opacity:.7">Definir abaixo</small></button>
+        </div>
+      </div>
+      <div id="mistoFields" style="display:none;gap:10px;grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label for="mQtdVideo">Qtd Vídeos</label>
+          <input type="number" id="mQtdVideo" value="0" min="0" oninput="massaPreview()">
+        </div>
+        <div class="field">
+          <label for="mQtdEstatico">Qtd Estáticos</label>
+          <input type="number" id="mQtdEstatico" value="0" min="0" oninput="massaPreview()">
+        </div>
+      </div>
+      <div id="simplesQtd" class="field">
+        <label for="mQtd">Quantidade total</label>
+        <input type="number" id="mQtd" value="12" min="1" max="60" oninput="massaPreview()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field">
+          <label for="mInicio">Data início *</label>
+          <input type="date" id="mInicio" oninput="massaPreview()">
+        </div>
+        <div class="field">
+          <label for="mFim">Data fim *</label>
+          <input type="date" id="mFim" oninput="massaPreview()">
+        </div>
+      </div>
+      <div class="field">
+        <label>Dias de postagem (escolha os dias fixos)</label>
+        <div class="dias-semana" id="diasSemana">
+          <button class="dia-chip" data-dia="1" onclick="toggleDia(this)">Seg</button>
+          <button class="dia-chip" data-dia="2" onclick="toggleDia(this)">Ter</button>
+          <button class="dia-chip" data-dia="3" onclick="toggleDia(this)">Qua</button>
+          <button class="dia-chip" data-dia="4" onclick="toggleDia(this)">Qui</button>
+          <button class="dia-chip" data-dia="5" onclick="toggleDia(this)">Sex</button>
+          <button class="dia-chip" data-dia="6" onclick="toggleDia(this)">Sáb</button>
+          <button class="dia-chip" data-dia="0" onclick="toggleDia(this)">Dom</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="mHorario">Horário padrão de postagem</label>
+        <input type="time" id="mHorario" value="09:00" oninput="massaPreview()">
+      </div>
+      <div class="field">
+        <label for="mResponsavel">Responsável</label>
+        <select id="mResponsavel"><option value="">— Nenhum —</option></select>
+      </div>
+      <div class="field">
+        <label>Prévia das tarefas</label>
+        <div class="massa-preview" id="massaPreviewBox">Preencha os campos acima para ver a prévia.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeMassaModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveMassa()" id="btnSalvarMassa">Criar tarefas</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL REAGENDAR -->
 <div class="modal-overlay" id="rescheduleOverlay">
   <div class="modal modal-sm">
@@ -720,7 +816,11 @@ window.doSignup = async function(){
 }
 window.doLogout = async function(){
   closeUserMenu()
-  await sb.auth.signOut()
+  try { await sb.auth.signOut() } catch(_){}
+  // Limpa dados do Supabase do localStorage para próximo login funcionar sem limpar cache manualmente
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('sb-'))
+    .forEach(k => localStorage.removeItem(k))
 }
 
 // ── SESSION ───────────────────────────────────────────────
@@ -739,6 +839,11 @@ async function iniciarSessao(session){
 }
 
 sb.auth.onAuthStateChange(async (event,session)=>{
+  // Ignora TOKEN_REFRESHED — apenas atualiza o currentUser sem recarregar tudo
+  if(event === 'TOKEN_REFRESHED'){
+    if(session) currentUser = session.user
+    return
+  }
   await iniciarSessao(session)
 })
 
@@ -749,8 +854,15 @@ try {
   if(error) throw error
   if(sessaoAtual) await iniciarSessao(sessaoAtual)
 } catch(e) {
-  // Sessao invalida ou expirada — limpa e mostra login normalmente
-  await sb.auth.signOut()
+  // Sessao invalida ou expirada — limpa localStorage e mostra login
+  // sem isso o browser fica com dados corrompidos e bloqueia o próximo login
+  try {
+    await sb.auth.signOut()
+  } catch(_){}
+  // Limpa todas as chaves do Supabase no localStorage
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('sb-'))
+    .forEach(k => localStorage.removeItem(k))
   document.getElementById('loginWrap').style.display='flex'
   document.getElementById('appWrap').style.display='none'
 }
@@ -767,6 +879,7 @@ async function loadProfile(){
   if(data.papel==='admin'){
     document.getElementById('navBadge').style.display=''
     document.getElementById('equipeTab').style.display=''
+    document.getElementById('btnMassa').style.display=''
   }
 }
 
@@ -1313,6 +1426,187 @@ window.saveTask=async function(){
   closeModal(); await loadAll()
 }
 
+// ── ENTRADA EM MASSA ─────────────────────────────────────
+let massaTipoAtual = 'video'
+
+window.openMassaModal = function(){
+  // Popular responsáveis
+  const sel = document.getElementById('mResponsavel')
+  sel.innerHTML = '<option value="">— Nenhum —</option>'
+  members.forEach(m => {
+    const o = document.createElement('option')
+    o.value = m.id; o.textContent = m.nome
+    sel.appendChild(o)
+  })
+  // Reset campos
+  document.getElementById('mCliente').value = ''
+  document.getElementById('mQtd').value = 12
+  document.getElementById('mQtdVideo').value = 0
+  document.getElementById('mQtdEstatico').value = 0
+  document.getElementById('mInicio').value = ''
+  document.getElementById('mFim').value = ''
+  document.getElementById('mHorario').value = '09:00'
+  document.querySelectorAll('.dia-chip').forEach(c => c.classList.remove('sel'))
+  massaTipoAtual = 'video'
+  document.getElementById('tipoVideo').classList.add('sel')
+  document.getElementById('tipoEstatico').classList.remove('sel')
+  document.getElementById('tipoMisto').classList.remove('sel')
+  document.getElementById('mistoFields').style.display = 'none'
+  document.getElementById('simplesQtd').style.display = ''
+  document.getElementById('massaPreviewBox').textContent = 'Preencha os campos acima para ver a prévia.'
+  document.getElementById('massaOverlay').classList.add('open')
+}
+
+window.closeMassaModal = function(){
+  document.getElementById('massaOverlay').classList.remove('open')
+}
+
+window.toggleTipo = function(tipo){
+  massaTipoAtual = tipo
+  document.getElementById('tipoVideo').classList.toggle('sel', tipo==='video')
+  document.getElementById('tipoEstatico').classList.toggle('sel', tipo==='estatico')
+  document.getElementById('tipoMisto').classList.toggle('sel', tipo==='misto')
+  document.getElementById('mistoFields').style.display = tipo==='misto' ? 'grid' : 'none'
+  document.getElementById('simplesQtd').style.display = tipo==='misto' ? 'none' : ''
+  massaPreview()
+}
+
+window.toggleDia = function(el){
+  el.classList.toggle('sel')
+  massaPreview()
+}
+
+function calcDatas(){
+  const inicioVal = document.getElementById('mInicio').value
+  const fimVal    = document.getElementById('mFim').value
+  const horario   = document.getElementById('mHorario').value || '09:00'
+  const dias      = [...document.querySelectorAll('.dia-chip.sel')].map(c => parseInt(c.dataset.dia))
+  if(!inicioVal || !fimVal || dias.length === 0) return []
+
+  const [hh, mm] = horario.split(':').map(Number)
+  const datas = []
+  const fim   = new Date(fimVal + 'T23:59:59')
+  let cur     = new Date(inicioVal + 'T00:00:00')
+
+  while(cur <= fim){
+    if(dias.includes(cur.getDay())){
+      const d = new Date(cur)
+      d.setHours(hh, mm, 0, 0)
+      datas.push(new Date(d))
+    }
+    cur.setDate(cur.getDate() + 1)
+  }
+  return datas
+}
+
+window.massaPreview = function(){
+  const box     = document.getElementById('massaPreviewBox')
+  const cliente = document.getElementById('mCliente').value.trim()
+  const datas   = calcDatas()
+  const horario = document.getElementById('mHorario').value || '09:00'
+
+  let qtdVideo    = 0, qtdEstatico = 0
+  if(massaTipoAtual === 'video'){
+    qtdVideo = parseInt(document.getElementById('mQtd').value) || 0
+  } else if(massaTipoAtual === 'estatico'){
+    qtdEstatico = parseInt(document.getElementById('mQtd').value) || 0
+  } else {
+    qtdVideo    = parseInt(document.getElementById('mQtdVideo').value) || 0
+    qtdEstatico = parseInt(document.getElementById('mQtdEstatico').value) || 0
+  }
+  const total = qtdVideo + qtdEstatico
+
+  if(!cliente || datas.length === 0 || total === 0){
+    box.textContent = 'Preencha os campos acima para ver a prévia.'
+    return
+  }
+
+  // Distribuir: primeiro vídeos, depois estáticos
+  const itens = []
+  for(let i = 0; i < qtdVideo;    i++) itens.push({tipo:'video',    label:'🎬 Vídeo '+(i+1),    esteira:'bloqueada'})
+  for(let i = 0; i < qtdEstatico; i++) itens.push({tipo:'estatico', label:'🖼 Estático '+(i+1), esteira:'programada'})
+
+  // Associar datas (cíclico se itens > datas)
+  const linhas = itens.map((item, i) => {
+    const d = datas[i % datas.length]
+    const dtStr = d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'})
+    return `${item.label} — ${dtStr} ${horario} [${item.esteira}]`
+  })
+
+  const aviso = total > datas.length
+    ? `
+⚠ ${total} tarefas em ${datas.length} datas — algumas datas vão ter mais de 1 tarefa.`
+    : `
+✅ ${total} tarefas em ${datas.length} datas disponíveis.`
+
+  box.textContent = linhas.join('
+') + aviso
+}
+
+window.saveMassa = async function(){
+  const cliente = document.getElementById('mCliente').value.trim()
+  const servico = document.getElementById('mServico').value
+  const responsavelId = document.getElementById('mResponsavel').value || null
+  const horario = document.getElementById('mHorario').value || '09:00'
+  const datas   = calcDatas()
+
+  let qtdVideo = 0, qtdEstatico = 0
+  if(massaTipoAtual === 'video'){
+    qtdVideo = parseInt(document.getElementById('mQtd').value) || 0
+  } else if(massaTipoAtual === 'estatico'){
+    qtdEstatico = parseInt(document.getElementById('mQtd').value) || 0
+  } else {
+    qtdVideo    = parseInt(document.getElementById('mQtdVideo').value) || 0
+    qtdEstatico = parseInt(document.getElementById('mQtdEstatico').value) || 0
+  }
+  const total = qtdVideo + qtdEstatico
+
+  if(!cliente){ showToast('Preencha o cliente','error'); return }
+  if(datas.length === 0){ showToast('Escolha data início, fim e pelo menos 1 dia da semana','error'); return }
+  if(total === 0){ showToast('Informe a quantidade de tarefas','error'); return }
+
+  const btn = document.getElementById('btnSalvarMassa')
+  btn.disabled = true; btn.textContent = 'Criando...'
+
+  const itens = []
+  for(let i = 0; i < qtdVideo;    i++) itens.push({tipo:'video',    num:i+1, esteira:'bloqueada',  motivo:'Aguardando gravação'})
+  for(let i = 0; i < qtdEstatico; i++) itens.push({tipo:'estatico', num:i+1, esteira:'programada', motivo:null})
+
+  const [hh, mm] = horario.split(':').map(Number)
+  const payloads = itens.map((item, i) => {
+    const d = new Date(datas[i % datas.length])
+    d.setHours(hh, mm, 0, 0)
+    // Prazo de aprovação = 7 dias antes da postagem
+    const aprovacao = new Date(d)
+    aprovacao.setDate(aprovacao.getDate() - 7)
+    const tipoLabel = item.tipo === 'video' ? 'Vídeo' : 'Estático'
+    return {
+      titulo: tipoLabel + ' ' + item.num + ' — ' + cliente,
+      cliente,
+      servico,
+      esteira: item.esteira,
+      motivo_bloqueio: item.motivo,
+      data_inicio: aprovacao.toISOString(), // início = 7 dias antes (prazo de aprovação)
+      prazo: d.toISOString(),               // prazo = data de postagem
+      tempo_estimado_min: item.tipo === 'video' ? 120 : 60,
+      responsavel_id: responsavelId,
+      atribuido_por: responsavelId ? currentUser.id : null,
+      status: 'ativo',
+    }
+  })
+
+  const { error } = await sb.from('kanban_tasks').insert(payloads)
+  if(error){
+    showToast('Erro: ' + error.message, 'error')
+    btn.disabled = false; btn.textContent = 'Criar tarefas'
+    return
+  }
+
+  showToast('✅ ' + total + ' tarefas criadas para ' + cliente + '!')
+  closeMassaModal()
+  await loadAll()
+}
+
 // ── REAGENDAR ────────────────────────────────────────────
 window.openReschedule=function(id){
   closeMenu(); rescheduleId=id; rescheduleSelectedDate=null
@@ -1456,6 +1750,23 @@ sb.channel('kanban')
   .subscribe()
 
 scheduleReminder()
+
+// ── REFRESH PROATIVO DE TOKEN ─────────────────────────────
+// JWT expira em 1h — força refresh a cada 45min para nunca desconectar
+setInterval(async () => {
+  const { data, error } = await sb.auth.refreshSession()
+  if(error || !data?.session) {
+    // Refresh falhou — tenta getSession antes de desconectar
+    const { data: sd } = await sb.auth.getSession()
+    if(!sd?.session) {
+      showToast('Sessão expirada. Faça login novamente.', 'error')
+      setTimeout(() => {
+        document.getElementById('loginWrap').style.display = 'flex'
+        document.getElementById('appWrap').style.display = 'none'
+      }, 2000)
+    }
+  }
+}, 45 * 60 * 1000) // 45 minutos
 </script>
 </body>
 </html>
