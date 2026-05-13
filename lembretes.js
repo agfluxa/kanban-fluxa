@@ -36,7 +36,7 @@ window.closeReminder=function(){
   document.getElementById('reminderOverlay').classList.remove('open')
   scheduleReminder()
 }
-function scheduleReminder(){
+export function scheduleReminder(){
   clearTimeout(state.reminderTimer)
   state.reminderTimer=setTimeout(()=>{ if(buildReminderItems().length) openReminder() },REMINDER_MS)
   const next=new Date(Date.now()+REMINDER_MS)

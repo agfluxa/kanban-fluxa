@@ -1,10 +1,11 @@
+let openMenuId = null
 import { state } from './state.js'
 import { SERVICOS, DIAS, CAP_MIN } from './config.js'
 import { minsToH, prazoInfo, fmtDt, todayStr, showToast } from './utils.js'
 import { sb } from './supabase.js'
 
 // ── CARGA ─────────────────────────────────────────────────
-function renderCarga(){
+export function renderCarga(){
   const today=todayStr()
   const todayTasks=state.tasks.filter(t=>t.data_inicio&&dateStr(new Date(t.data_inicio))===today)
   const totalMin=todayTasks.reduce((s,t)=>s+(t.tempo_estimado_min||60),0)
@@ -32,7 +33,7 @@ function isColliding(t){
   if(!t.data_inicio) return false
   return state.tasks.some(o=>o.id!==t.id&&hasOverlap(t,o))
 }
-function checkCollisions(){
+export function checkCollisions(){
   const conflicts=[]
   for(let i=0;i<state.tasks.length;i++){
     for(let j=i+1;j<state.tasks.length;j++){
@@ -54,7 +55,7 @@ function checkCollisions(){
 }
 
 // ── RENDER KANBAN ─────────────────────────────────────────
-function renderAll(){
+export function renderAll(){
   ;['programada','bloqueada','urgente'].forEach(esteira=>{
     const list=state.tasks.filter(t=>t.esteira===esteira)
     document.getElementById('count-'+esteira).textContent=list.length

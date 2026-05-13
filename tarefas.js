@@ -1,3 +1,4 @@
+let openMenuId = null
 import { state } from './state.js'
 import { SERVICOS } from './config.js'
 import { sb } from './supabase.js'

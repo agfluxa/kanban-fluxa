@@ -4,7 +4,7 @@ import { sb } from './supabase.js'
 import { showToast } from './utils.js'
 
 // ── TEMPLATES ─────────────────────────────────────────────
-function renderTemplates(){
+export function renderTemplates(){
   const grid=document.getElementById('tplGrid')
   if(!state.templates.length){ grid.innerHTML='<div style="color:var(--text3);font-size:13px;padding:20px">Nenhum template criado ainda.</div>'; return }
   grid.innerHTML=state.templates.map(tpl=>{
@@ -18,13 +18,13 @@ function renderTemplates(){
   }).join('')
 }
 
-function populateTplSelector(){
+export function populateTplSelector(){
   const sel=document.getElementById('fTemplate')
   sel.innerHTML='<option value="">— Nenhum —</option>'+
     state.templates.map(t=>'<option value="'+t.id+'">'+t.nome+'</option>').join('')
 }
 
-function populateResponsavelSelector(){
+export function populateResponsavelSelector(){
   const sel=document.getElementById('fResponsavel')
   sel.innerHTML='<option value="">— Eu mesmo —</option>'+
     state.members.filter(m=>m.id!==currentUser?.id).map(m=>'<option value="'+m.id+'">'+m.nome+'</option>').join('')

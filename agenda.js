@@ -10,7 +10,7 @@ window.setAgendaView=function(v,btn){
 }
 window.navAgenda=function(dir){ state.agendaOffset+=dir; renderAgenda() }
 
-function renderAgenda(){
+export function renderAgenda(){
   const grid=document.getElementById('agendaGrid')
   const title=document.getElementById('agendaTitle')
   const today=new Date(); today.setHours(0,0,0,0)

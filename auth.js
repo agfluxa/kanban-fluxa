@@ -24,11 +24,11 @@ window.doLogin = async function() {
   const senha = document.getElementById('lSenha').value
   if (!email || !senha) { document.getElementById('loginErr').textContent = 'Preencha todos os campos'; return }
   const btnL = document.getElementById('btnLogin')
-  btnL.disabled = true; btnL.textContent = 'Entrando...'
+  if (btnL) { btnL.disabled = true; btnL.textContent = 'Entrando...' }
   const { error } = await sb.auth.signInWithPassword({ email, password: senha })
   if (error) {
     document.getElementById('loginErr').textContent = error.message
-    btnL.disabled = false; btnL.textContent = 'Entrar'
+    if (btnL) { btnL.disabled = false; btnL.textContent = 'Entrar' }
   }
   // Sucesso: onAuthStateChange dispara emitSessao automaticamente
 }
