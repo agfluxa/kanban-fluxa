@@ -3,7 +3,7 @@ import { sb } from './supabase.js'
 import { showToast, initials } from './utils.js'
 
 // ── EQUIPE ────────────────────────────────────────────────
-function renderEquipe(){
+export function renderEquipe(){
   const grid=document.getElementById('equipeGrid')
   if(!state.members.length){ grid.innerHTML='<div style="color:var(--text3);font-size:13px">Nenhum membro ainda.</div>'; return }
   grid.innerHTML=state.members.map(m=>{
