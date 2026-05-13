@@ -1,5 +1,5 @@
 import { state } from './state.js'
-import { REMINDER_MS } from './config.js'
+import { REMINDER_MS, SERVICOS } from './config.js'
 import { fmtDt } from './utils.js'
 
 // ── LEMBRETE ─────────────────────────────────────────────

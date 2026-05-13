@@ -1,7 +1,7 @@
 import { state } from './state.js'
 import { SERVICOS } from './config.js'
 import { sb } from './supabase.js'
-import { showToast } from './utils.js'
+import { showToast, minsToH } from './utils.js'
 
 // ── TEMPLATES ─────────────────────────────────────────────
 export function renderTemplates(){
@@ -27,7 +27,7 @@ export function populateTplSelector(){
 export function populateResponsavelSelector(){
   const sel=document.getElementById('fResponsavel')
   sel.innerHTML='<option value="">— Eu mesmo —</option>'+
-    state.members.filter(m=>m.id!==currentUser?.id).map(m=>'<option value="'+m.id+'">'+m.nome+'</option>').join('')
+    state.members.filter(m=>m.id!==state.currentUser?.id).map(m=>'<option value="'+m.id+'">'+m.nome+'</option>').join('')
 }
 
 window.applyTemplate=function(){
@@ -78,10 +78,10 @@ window.saveTpl=async function(){
   if(id){ ({error:err}=await sb.from('task_templates').update(payload).eq('id',id)) }
   else   { ({error:err}=await sb.from('task_templates').insert(payload)) }
   if(err){ showToast('Erro: '+err.message,'error'); return }
-  showToast('Template salvo!'); closeTplModal(); await loadAll()
+  showToast('Template salvo!'); closeTplModal(); await window._loadAll()
 }
 window.deleteTpl=async function(id){
   if(!confirm('Excluir este template?')) return
   await sb.from('task_templates').delete().eq('id',id)
-  showToast('Template excluído'); await loadAll()
+  showToast('Template excluído'); await window._loadAll()
 }

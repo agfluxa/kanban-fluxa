@@ -7,7 +7,7 @@ export function renderEquipe(){
   const grid=document.getElementById('equipeGrid')
   if(!state.members.length){ grid.innerHTML='<div style="color:var(--text3);font-size:13px">Nenhum membro ainda.</div>'; return }
   grid.innerHTML=state.members.map(m=>{
-    const taskCount=tasks.filter(t=>t.responsavel_id===m.id).length
+    const taskCount=state.tasks.filter(t=>t.responsavel_id===m.id).length
     return '<div class="member-card">'+
       '<div class="member-avatar">'+initials(m.nome)+'</div>'+
       '<div class="member-info">'+
@@ -48,5 +48,5 @@ window.sendInvite=async function(){
   }
 
   showToast('✅ Membro convidado! Peça para ele definir a senha via "Esqueci minha senha".')
-  closeInviteModal(); await loadAll()
+  window.closeInviteModal(); await window._loadAll()
 }

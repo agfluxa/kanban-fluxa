@@ -1,6 +1,7 @@
 import { state } from './state.js'
-import { DIAS, MESES } from './config.js'
-import { fmtDt, todayStr, dateStr } from './utils.js'
+import { DIAS, MESES, CAP_MIN } from './config.js'
+import { fmtDt, todayStr, dateStr, minsToH } from './utils.js'
+import { isColliding } from './kanban.js'
 
 // ── AGENDA ───────────────────────────────────────────────
 window.setAgendaView=function(v,btn){
@@ -49,7 +50,7 @@ function renderDayCol(date,today){
   const loadCls=pct>100?'over':pct>75?'warn':''
   const chips=dayTasks.map(t=>{
     const conflict=isColliding(t)?' chip-conflict':''
-    const mine=t.responsavel_id===currentUser?.id?' chip-mine':''
+    const mine=t.responsavel_id===state.currentUser?.id?' chip-mine':''
     return '<div class="agenda-chip'+conflict+mine+'" onclick="openEditModal(\''+t.id+'\')" title="'+t.titulo+'">'+
       (t.data_inicio?new Date(t.data_inicio).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' ':'')+t.titulo+'</div>'
   }).join('')

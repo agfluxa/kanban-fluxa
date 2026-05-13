@@ -1,8 +1,9 @@
-let openMenuId = null
 import { state } from './state.js'
-import { SERVICOS } from './config.js'
+import { SERVICOS, DIAS, CAP_MIN } from './config.js'
 import { sb } from './supabase.js'
-import { showToast, fmtDt, sendWhatsApp } from './utils.js'
+import { showToast, fmtDt, sendWhatsApp, minsToH, dateStr, todayStr } from './utils.js'
+
+let openMenuId = null
 
 // ── TASK MODAL ────────────────────────────────────────────
 window.openModal=function(){
@@ -125,7 +126,7 @@ window.saveTask=async function(){
         '👤 Cliente: '+cliente+'\n'+
         '🏷 Serviço: '+svc.label+
         prazoTxt+'\n\n'+
-        'Atribuída por: '+( state.currentProfile?.nome||'Admin')+'\n'+
+        'Atribuída por: '+(state.currentProfile?.nome||'Admin')+'\n'+
         'Acesse o Kanban para ver os detalhes.'
       await sendWhatsApp(responsavel.telefone,msg)
     }
@@ -145,7 +146,7 @@ window.openReschedule=function(id){
   for(let i=1;i<=8;i++){
     const d=new Date(today); d.setDate(today.getDate()+i)
     const ds=dateStr(d)
-    const totalMin=getTasksForDay(d).reduce((s,t)=>s+(t.tempo_estimado_min||60),0)
+    const totalMin=state.tasks.filter(t=>t.data_inicio&&dateStr(new Date(t.data_inicio))===ds).reduce((s,t)=>s+(t.tempo_estimado_min||60),0)
     const pct=Math.round(totalMin/CAP_MIN*100)
     const loadCls=pct>100?'over':pct>75?'warn':''
     const btn=document.createElement('div'); btn.className='reschedule-day'
@@ -216,4 +217,3 @@ function closeMenu(){
   openMenuId=null
 }
 document.addEventListener('click',closeMenu)
-
