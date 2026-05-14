@@ -84,6 +84,11 @@ function getMemberName(id){
   const m=state.members.find(m=>m.id===id)
   return m?m.nome:null
 }
+function getMemberCargo(id){
+  const m=state.members.find(m=>m.id===id)
+  if(!m?.cargo_id) return null
+  return state.cargos.find(c=>c.id===m.cargo_id)?.nome||null
+}
 
 function renderCard(t,esteira){
   const p=prazoInfo(t.prazo)
@@ -97,8 +102,15 @@ function renderCard(t,esteira){
   let assigneeHtml=''
   if(t.responsavel_id){
     const nome=getMemberName(t.responsavel_id)||'...'
+    const cargo=getMemberCargo(t.responsavel_id)
     const isMe=t.responsavel_id===state.currentUser?.id
-    assigneeHtml='<div class="card-assignee"><div class="assignee-dot'+(isMe?' assignee-mine':'')+'">'+initials(nome)+'</div><span class="assignee-name">'+nome+(isMe?' (você)':'')+'</span></div>'
+    assigneeHtml='<div class="card-assignee">'+
+      '<div class="assignee-dot'+(isMe?' assignee-mine':'')+'">'+initials(nome)+'</div>'+
+      '<div class="assignee-info">'+
+        '<span class="assignee-name">'+nome+(isMe?' (você)':'')+'</span>'+
+        (cargo?'<span class="assignee-cargo">'+cargo+'</span>':'')+
+      '</div>'+
+    '</div>'
   }
 
   // checklist

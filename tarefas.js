@@ -6,6 +6,14 @@ import { showToast, fmtDt, sendWhatsApp, minsToH, dateStr, todayStr } from './ut
 let openMenuId = null
 
 // ── TASK MODAL ────────────────────────────────────────────
+window.updateResponsavelCargo=function(id){
+  const el=document.getElementById('fResponsavelCargo')
+  if(!el) return
+  if(!id){ el.textContent=''; return }
+  const m=state.members.find(m=>m.id===id)
+  const cargo=m?.cargo_id?state.cargos.find(c=>c.id===m.cargo_id)?.nome:null
+  el.textContent=cargo||''
+}
 window.openModal=function(){
   document.getElementById('editId').value=''
   document.getElementById('fTitulo').value=''
@@ -23,6 +31,7 @@ window.openModal=function(){
   document.getElementById('checklistEditor').style.display='none'
   document.getElementById('tplSelector').style.display='block'
   document.getElementById('modalTitle').textContent='Nova tarefa'
+  updateResponsavelCargo('')
   toggleBloqField()
   document.getElementById('modalOverlay').classList.add('open')
 }
@@ -40,6 +49,7 @@ window.openEditModal=function(id){
   document.getElementById('fBloq').value=t.motivo_bloqueio||''
   document.getElementById('fObs').value=t.obs||''
   document.getElementById('fResponsavel').value=t.responsavel_id||''
+  updateResponsavelCargo(t.responsavel_id||'')
   document.getElementById('tplSelector').style.display='none'
   document.getElementById('modalTitle').textContent='Editar tarefa'
   const etapas=t.etapas_progresso||[]

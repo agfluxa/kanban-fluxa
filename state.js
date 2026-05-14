@@ -8,6 +8,7 @@ export const state = {
   tasks:          [],
   members:        [],
   templates:      [],
+  cargos:         [],
   dragId:         null,
   agendaView:     'semana',
   agendaOffset:   0,

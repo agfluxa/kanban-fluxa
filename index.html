@@ -135,7 +135,9 @@
     <div class="user-dropdown-name" id="ddName">...</div>
     <div class="user-dropdown-email" id="ddEmail">...</div>
   </div>
-  <div class="dropdown-item" onclick="openPerfilModal()">👤 Meu perfil</div>
+  <div class="dropdown-item" onclick="openPerfilModal();closeUserMenu()">✏️ Mudar nome</div>
+  <div class="dropdown-item" onclick="openSenhaModal();closeUserMenu()">🔑 Mudar senha</div>
+  <div class="dropdown-divider"></div>
   <div class="dropdown-item danger" onclick="doLogout()">↩ Sair</div>
 </div>
 
@@ -189,9 +191,10 @@
         </div>
         <div class="field">
           <label>Responsável</label>
-          <select id="fResponsavel">
+          <select id="fResponsavel" onchange="updateResponsavelCargo(this.value)">
             <option value="">— Eu mesmo —</option>
           </select>
+          <div id="fResponsavelCargo" class="responsavel-cargo-label"></div>
         </div>
       </div>
       <div class="row2">
@@ -422,6 +425,24 @@
     <div class="reminder-footer">
       <span class="reminder-next" id="reminderNext"></span>
       <button class="btn-dismiss" onclick="closeReminder()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MUDAR SENHA -->
+<div class="modal-overlay" id="senhaOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title">Mudar senha</div>
+      <button class="modal-close" onclick="closeSenhaModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nova senha</label><input type="password" id="pSenhaNova" placeholder="Mínimo 6 caracteres"></div>
+      <div class="field"><label>Confirmar nova senha</label><input type="password" id="pSenhaConfirm" placeholder="Repita a senha"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeSenhaModal()">Cancelar</button>
+      <button class="btn-save" onclick="changePassword()">Salvar senha</button>
     </div>
   </div>
 </div>

@@ -27,7 +27,10 @@ export function populateTplSelector(){
 export function populateResponsavelSelector(){
   const sel=document.getElementById('fResponsavel')
   sel.innerHTML='<option value="">— Eu mesmo —</option>'+
-    state.members.filter(m=>m.id!==state.currentUser?.id).map(m=>'<option value="'+m.id+'">'+m.nome+'</option>').join('')
+    state.members.filter(m=>m.id!==state.currentUser?.id).map(m=>{
+      const cargo=state.cargos.find(c=>c.id===m.cargo_id)
+      return '<option value="'+m.id+'">'+m.nome+(cargo?' · '+cargo.nome:'')+'</option>'
+    }).join('')
 }
 
 window.applyTemplate=function(){

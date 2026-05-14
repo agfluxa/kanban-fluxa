@@ -38,15 +38,17 @@ window.addEventListener('fluxa:tokenRefresh', (e) => {
 // ── LOAD ──────────────────────────────────────────────────
 export async function loadAll() {
   try {
-    const [{ data: tasks, error: e1 }, { data: members }, { data: templates }] = await Promise.all([
+    const [{ data: tasks, error: e1 }, { data: members }, { data: templates }, { data: cargos }] = await Promise.all([
       sb.from('kanban_tasks').select('*').eq('status', 'ativo').order('data_inicio', { ascending: true, nullsFirst: false }),
       sb.from('profiles').select('*'),
       sb.from('task_templates').select('*').order('nome'),
+      sb.from('cargos').select('*').order('nome'),
     ])
     if (e1) { setStatus(false); return }
     state.tasks     = tasks     || []
     state.members   = members   || []
     state.templates = templates || []
+    state.cargos    = cargos    || []
     setStatus(true)
     renderAll()
     renderCarga()
@@ -83,10 +85,19 @@ async function loadProfile() {
 
 // ── USER MENU ─────────────────────────────────────────────
 window.toggleUserMenu = function() {
-  document.getElementById('userDropdown').classList.toggle('open')
+  const dd = document.getElementById('userDropdown')
+  const ov = document.getElementById('userMenuOverlay')
+  if (dd.classList.contains('hidden')) {
+    dd.classList.remove('hidden')
+    ov.classList.add('open')
+  } else {
+    dd.classList.add('hidden')
+    ov.classList.remove('open')
+  }
 }
 window.closeUserMenu = function() {
-  document.getElementById('userDropdown').classList.remove('open')
+  document.getElementById('userDropdown').classList.add('hidden')
+  document.getElementById('userMenuOverlay').classList.remove('open')
 }
 window.openPerfilModal = function() {
   const p = state.currentProfile
@@ -107,6 +118,24 @@ window.savePerfil = async function() {
   showToast('✅ Perfil salvo!')
   window.closePerfilModal()
   await loadProfile()
+}
+window.openSenhaModal = function() {
+  document.getElementById('pSenhaNova').value    = ''
+  document.getElementById('pSenhaConfirm').value = ''
+  document.getElementById('senhaOverlay').classList.add('open')
+}
+window.closeSenhaModal = function() {
+  document.getElementById('senhaOverlay').classList.remove('open')
+}
+window.changePassword = async function() {
+  const nova    = document.getElementById('pSenhaNova').value
+  const confirm = document.getElementById('pSenhaConfirm').value
+  if (!nova || nova.length < 6) { showToast('Senha mínimo 6 caracteres', 'error'); return }
+  if (nova !== confirm)         { showToast('Senhas não conferem', 'error'); return }
+  const { error } = await sb.auth.updateUser({ password: nova })
+  if (error) { showToast('Erro: ' + error.message, 'error'); return }
+  showToast('✅ Senha alterada!')
+  window.closeSenhaModal()
 }
 
 // ── VIEWS ─────────────────────────────────────────────────
