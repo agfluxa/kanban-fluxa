@@ -21,7 +21,7 @@ function fmtShort(ds) {
 }
 
 function getTasksForDay(ds) {
-  return state.tasks.filter(t => t.data_inicio && dateStrSP(t.data_inicio) === ds)
+  return state.tasks.filter(t => t.prazo && dateStrSP(t.prazo) === ds)
 }
 
 function dsFromYMD(y, m, d) {
@@ -91,7 +91,7 @@ function renderSemana(grid, title, todayDs) {
       const conflict = isColliding(t) ? ' chip-conflict' : ''
       const mine     = t.responsavel_id === state.currentUser?.id ? ' chip-mine' : ''
       const svc      = SERVICOS[t.servico] || SERVICOS.outro
-      const timePfx  = t.data_inicio ? timeLblSP(t.data_inicio) + ' ' : ''
+      const timePfx  = t.prazo ? timeLblSP(t.prazo) + ' ' : ''
       return '<div class="agenda-chip ' + svc.cls + conflict + mine + '"' +
         ' onclick="openEditModal(\'' + t.id + '\')" title="' + t.titulo + '">' +
         timePfx + t.titulo +

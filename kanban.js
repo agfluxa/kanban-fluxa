@@ -3,6 +3,15 @@ import { SERVICOS, DIAS, CAP_MIN } from './config.js'
 import { minsToH, prazoInfo, fmtDt, todayStr, showToast, initials } from './utils.js'
 import { sb } from './supabase.js'
 
+const TZ_SP = 'America/Sao_Paulo'
+function fmtPrazoCard(prazo) {
+  const d = new Date(prazo)
+  const dd = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: TZ_SP }).format(d)
+  const hm = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: TZ_SP, hour12: false }).format(d)
+  const [h, m] = hm.split(':')
+  return dd + ' às ' + parseInt(h) + (parseInt(m) > 0 ? 'h' + m : 'h')
+}
+
 // ── CARGA ─────────────────────────────────────────────────
 export function renderCarga(){
   const today=todayStr()
@@ -138,18 +147,22 @@ function renderCard(t,esteira){
             '<button class="action-btn depois"   onclick="openReschedule(\''+t.id+'\')">📅 Reagendar</button>'
   }
 
+  const deadlineHtml = t.prazo ? '<span class="card-deadline">'+fmtPrazoCard(t.prazo)+'</span>' : ''
   return '<div class="card'+collision+'" id="card-'+t.id+'" draggable="true"'+
     ' ondragstart="onDragStart(event,\''+t.id+'\')" ondragend="onDragEnd()">'+
     '<div class="card-top">'+
       '<div class="card-title">'+t.titulo+'</div>'+
-      '<button class="card-menu-btn" onclick="toggleMenu(\''+t.id+'\',event)">⋯</button>'+
-      '<div class="card-menu" id="menu-'+t.id+'">'+
-        '<div class="menu-item" onclick="openEditModal(\''+t.id+'\')">✏️ Editar</div>'+
-        '<div class="menu-item" onclick="openReschedule(\''+t.id+'\')">📅 Reagendar</div>'+
-        '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'programada\')">📅 → Programada</div>'+
-        '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'bloqueada\')">🔒 → Bloqueada</div>'+
-        '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'urgente\')">🔥 → Urgente</div>'+
-        '<div class="menu-item danger" onclick="deleteTask(\''+t.id+'\')">🗑 Excluir</div>'+
+      '<div class="card-top-right">'+
+        deadlineHtml+
+        '<button class="card-menu-btn" onclick="toggleMenu(\''+t.id+'\',event)">⋯</button>'+
+        '<div class="card-menu" id="menu-'+t.id+'">'+
+          '<div class="menu-item" onclick="openEditModal(\''+t.id+'\')">✏️ Editar</div>'+
+          '<div class="menu-item" onclick="openReschedule(\''+t.id+'\')">📅 Reagendar</div>'+
+          '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'programada\')">📅 → Programada</div>'+
+          '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'bloqueada\')">🔒 → Bloqueada</div>'+
+          '<div class="menu-item" onclick="moveCard(\''+t.id+'\',\'urgente\')">🔥 → Urgente</div>'+
+          '<div class="menu-item danger" onclick="deleteTask(\''+t.id+'\')">🗑 Excluir</div>'+
+        '</div>'+
       '</div>'+
     '</div>'+
     assigneeHtml+timeHtml+obsHtml+bloqHtml+prazoHtml+progressHtml+checkHtml+

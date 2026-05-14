@@ -36,7 +36,7 @@
     <div class="nav-right">
       <div class="status-dot" id="statusDot"></div>
       <span class="status-lbl" id="statusLbl">Conectando...</span>
-      <button class="bell-btn" onclick="openReminder()">🔔</button>
+      <button class="bell-btn" onclick="openReminder()">🔔<span class="bell-badge" id="bellBadge" style="display:none">0</span></button>
       <button class="btn-secondary" id="btnMassa" style="display:none" onclick="openMassaModal()">⚡ Entrada em massa</button>
       <button class="btn-primary" onclick="openModal()">＋ Nova tarefa</button>
       <div class="user-chip" onclick="toggleUserMenu()">
@@ -130,7 +130,7 @@
 
 <!-- USER DROPDOWN -->
 <div class="user-menu-overlay" id="userMenuOverlay" onclick="closeUserMenu()"></div>
-<div class="user-dropdown hidden" id="userDropdown">
+<div class="user-dropdown" id="userDropdown" style="display:none">
   <div class="user-dropdown-header">
     <div class="user-dropdown-name" id="ddName">...</div>
     <div class="user-dropdown-email" id="ddEmail">...</div>

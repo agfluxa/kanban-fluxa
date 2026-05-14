@@ -9,7 +9,7 @@ import { renderAll, renderCarga, checkCollisions } from './kanban.js'
 import { renderAgenda } from './agenda.js'
 import { renderTemplates, populateTplSelector, populateResponsavelSelector } from './templates.js'
 import { renderEquipe } from './equipe.js'
-import { scheduleReminder } from './lembretes.js'
+import { scheduleReminder, updateBellBadge } from './lembretes.js'
 
 // ── SESSÃO ────────────────────────────────────────────────
 window.addEventListener('fluxa:sessao', async (e) => {
@@ -59,6 +59,7 @@ export async function loadAll() {
     populateTplSelector()
     populateResponsavelSelector()
     scheduleReminder()
+    updateBellBadge()
   } catch(e) {
     setStatus(false)
     console.error('loadAll erro:', e)
@@ -87,16 +88,12 @@ async function loadProfile() {
 window.toggleUserMenu = function() {
   const dd = document.getElementById('userDropdown')
   const ov = document.getElementById('userMenuOverlay')
-  if (dd.classList.contains('hidden')) {
-    dd.classList.remove('hidden')
-    ov.classList.add('open')
-  } else {
-    dd.classList.add('hidden')
-    ov.classList.remove('open')
-  }
+  const isOpen = dd.style.display === 'block'
+  dd.style.display = isOpen ? 'none' : 'block'
+  ov.classList.toggle('open', !isOpen)
 }
 window.closeUserMenu = function() {
-  document.getElementById('userDropdown').classList.add('hidden')
+  document.getElementById('userDropdown').style.display = 'none'
   document.getElementById('userMenuOverlay').classList.remove('open')
 }
 window.openPerfilModal = function() {
