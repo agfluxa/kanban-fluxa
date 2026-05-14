@@ -94,10 +94,15 @@
         <div style="display:flex;gap:4px">
           <button class="view-toggle active" onclick="setAgendaView('semana',this)">Semana</button>
           <button class="view-toggle" onclick="setAgendaView('mes',this)">Mês</button>
+          <button class="view-toggle" onclick="setAgendaView('anual',this)">Ano</button>
+        </div>
+        <div id="agendaZoomBtns" style="display:none;gap:4px;align-items:center">
+          <button class="btn-primary" style="font-size:13px;padding:4px 10px" onclick="zoomAgenda(-1)" title="Menos colunas">−</button>
+          <button class="btn-primary" style="font-size:13px;padding:4px 10px" onclick="zoomAgenda(1)"  title="Mais colunas">+</button>
         </div>
         <button class="btn-primary" style="font-size:12px;padding:5px 11px" onclick="navAgenda(-1)">‹</button>
         <button class="btn-primary" style="font-size:12px;padding:5px 11px" onclick="navAgenda(1)">›</button>
-        <button class="btn-cancel" style="font-size:12px;padding:5px 11px;border-radius:8px;cursor:pointer" onclick="agendaOffset=0;renderAgenda()">Hoje</button>
+        <button class="btn-cancel" style="font-size:12px;padding:5px 11px;border-radius:8px;cursor:pointer" onclick="goToToday()">Hoje</button>
       </div>
       <div id="agendaGrid"></div>
     </div>
@@ -117,18 +122,9 @@
     </div>
   </div>
 
-  <!-- EQUIPE (admin only) -->
+  <!-- EQUIPE (admin only) — conteúdo gerado por equipe.js/renderEquipe() -->
   <div class="view" id="view-equipe">
-    <div class="equipe-wrap">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-        <div>
-          <div style="font-family:var(--font-display);font-weight:700;font-size:15px">Equipe</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:3px">Gerencie membros e convites</div>
-        </div>
-        <button class="btn-primary" onclick="openInviteModal()">＋ Convidar membro</button>
-      </div>
-      <div class="equipe-grid" id="equipeGrid"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
-    </div>
+    <div class="equipe-wrap"></div>
   </div>
 </div>
 

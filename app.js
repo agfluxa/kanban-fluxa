@@ -112,7 +112,7 @@ window.savePerfil = async function() {
 // ── VIEWS ─────────────────────────────────────────────────
 window.showView = function(id, btn) {
   document.querySelectorAll('.view').forEach(v => v.style.display = 'none')
-  document.getElementById('view-' + id).style.display = ''
+  document.getElementById('view-' + id).style.display = 'block'
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
   btn.classList.add('active')
 }

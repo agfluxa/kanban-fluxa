@@ -26,6 +26,10 @@ export function fmtDt(iso) {
 
 export function todayStr() { return new Date().toISOString().slice(0, 10) }
 export function dateStr(d) { return d.toISOString().slice(0, 10) }
+export function dateStrSP(d) {
+  return new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Sao_Paulo' })
+    .format(d instanceof Date ? d : new Date(d))
+}
 
 export function minsToH(m) {
   const h = Math.floor(m / 60), min = m % 60

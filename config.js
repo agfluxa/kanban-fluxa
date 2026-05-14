@@ -14,9 +14,13 @@ export const REMINDER_MS = 30 * 60 * 1000
 export const CAP_MIN     = 24 * 60
 
 export const SERVICOS = {
-  trafego: { label: 'Tráfego Pago',  cls: 'svc-trafego' },
-  social:  { label: 'Social Media',  cls: 'svc-social'  },
-  outro:   { label: 'Outro',         cls: 'svc-outro'   },
+  trafego:     { label: 'Tráfego Pago',       cls: 'svc-trafego'     },
+  social:      { label: 'Social Media',        cls: 'svc-social'      },
+  identidade:  { label: 'Identidade Visual',   cls: 'svc-identidade'  },
+  site:        { label: 'Site / Landing Page', cls: 'svc-site'        },
+  video:       { label: 'Edição de Vídeo',     cls: 'svc-video'       },
+  consultoria: { label: 'Consultoria',         cls: 'svc-consultoria' },
+  outro:       { label: 'Outro',               cls: 'svc-outro'       },
 }
 
 export const DIAS  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']

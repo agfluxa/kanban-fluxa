@@ -9,7 +9,7 @@ export const state = {
   members:        [],
   templates:      [],
   dragId:         null,
-  agendaView:     'week',
+  agendaView:     'semana',
   agendaOffset:   0,
   rescheduleId:   null,
   rescheduleSelectedDate: null,
